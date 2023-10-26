@@ -9,6 +9,15 @@ router.get('/getMajorList', async (ctx, next) => {
       message:'查询成功'
     }
 })
+/**获取课程分类的课程列表 */
+router.get("/getMajorCourseList",async (ctx,next)=>{
+  let {majorId} = ctx.query
+  let result = await db.queryDB(`select * from course WHERE major=${majorId}`);
+  ctx.body={
+    ...result,
+    message:"查询成功"
+  }
+})
 
 
 /**获取菜单id */
@@ -27,7 +36,7 @@ router.get("/getHotCourseList",async (ctx,next)=>{
   for(let i = 0;i<majorList["data"].length;i++){
     /**查询课程内容 */
     let result = await db.queryDB(`select * from course WHERE major=${majorList["data"][i]['majorId']}`);
-    let resultData = result['data'];
+    let resultData = result['data'].reverse().slice(0,10);
     resultData.forEach(element => {
       element.majorLabel = majorList["data"][i]['majorLabel'];
       formData.push(element)
@@ -63,6 +72,16 @@ router.get("/getMajorCourseList",async (ctx,next)=>{
   }
 })
 
+/**模糊查询 */
+router.get("/queryLike",async (ctx,next)=>{
+  let {keywords} = ctx.query;
+  let result = await db.queryDB(`SELECT * FROM course WHERE courseLabe LIKE '%${keywords}%'`);
+  ctx.body = {
+    ...result,
+    message:"查询成功"
+  }
+})
+
 
 /**添加新课程*/
 router.post("/createCourse",async(ctx,next)=>{
@@ -77,5 +96,7 @@ router.post("/createCourse",async(ctx,next)=>{
   }
 
 })
+
+
 
 module.exports = router
