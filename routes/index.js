@@ -36,7 +36,7 @@ router.get("/getHotCourseList",async (ctx,next)=>{
   for(let i = 0;i<majorList["data"].length;i++){
     /**查询课程内容 */
     let result = await db.queryDB(`select * from course WHERE major=${majorList["data"][i]['majorId']}`);
-    let resultData = result['data'].reverse().slice(0,10);
+    let resultData = result['data'].slice(0,10);
     resultData.forEach(element => {
       element.majorLabel = majorList["data"][i]['majorLabel'];
       formData.push(element)
